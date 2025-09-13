@@ -7,6 +7,7 @@
 
 # Test binaries
 *.test
+*.bin
 
 # Output of `go build`
 *.out

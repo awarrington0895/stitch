@@ -1,0 +1,15 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  bucket: 'stitch-tester-bucket'
+  key: 'test.bin'
+
+tasks:
+  build:
+    cmds:
+      - go build main.go
+  upload:
+    cmds:
+      - ./main -bucket {{.bucket}} -key {{.key}} -file {{.key}}
