@@ -29,12 +29,10 @@ func main() {
 
 	ctx := context.Background()
 
-	cfg, err := config.LoadDefaultConfig(ctx)
+	client, err := initializeClient(ctx)
 	if err != nil {
-		log.Fatalf("unable to load SDK config, %v", err)
+		log.Fatalf("%v", err)
 	}
-
-	client := s3.NewFromConfig(cfg)
 
 	f, err := os.Open(*filePath)
 	if err != nil {
@@ -119,4 +117,13 @@ func main() {
 	}
 
 	fmt.Println("Upload completed successfully!")
+}
+
+func initializeClient(ctx context.Context) (*s3.Client, error) {
+	cfg, err := config.LoadDefaultConfig(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("unable to load SDK config: %v", err)
+	}
+
+	return s3.NewFromConfig(cfg), nil
 }
