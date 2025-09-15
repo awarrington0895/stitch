@@ -13,10 +13,13 @@ tasks:
       - fallocate -l {{.CLI_ARGS}} {{.key}}
   upload:
     cmds:
-      - ./main -bucket {{.bucket}} -key {{.key}} -file {{.key}}
+      - ./main -bucket {{.bucket}} -key {{.key}} -file {{.key}} {{.CLI_ARGS}}
   s3:remove:
     cmds:
       - aws s3api delete-object --bucket {{.bucket}} --key {{.key}}
   s3:list:
     cmds:
       - aws s3api list-objects --bucket {{.bucket}} | jq
+  s3:create:
+    cmds:
+      - aws s3api create-bucket --bucket {{.bucket}}

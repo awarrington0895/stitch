@@ -16,15 +16,23 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 )
 
+const defaultChunkSize = 15 * 1024 * 1024
+const minimumChunkSize = 5 * 1024 * 1024
+
 func main() {
 	bucket := flag.String("bucket", "", "S3 bucket name")
 	key := flag.String("key", "", "S3 object key")
 	filePath := flag.String("file", "", "Path to the local file")
+	chunkSize := flag.Int64("chunkSize", defaultChunkSize, "Size of each chunk in bytes")
 	flag.Parse()
 
 	if *bucket == "" || *key == "" || *filePath == "" {
 		flag.Usage()
-		log.Fatal("bucket, key, and file must all be provided")
+		fmt.Println("bucket, key, and file must all be provided")
+	}
+
+	if *chunkSize < minimumChunkSize {
+		fmt.Println("--chunkSize must be greater than: ", minimumChunkSize)
 	}
 
 	ctx := context.Background()
@@ -57,7 +65,7 @@ func main() {
 
 	partNum := int32(1)
 
-	buffer := make([]byte, 5*1024*1024)
+	buffer := make([]byte, *chunkSize)
 
 	for {
 		n, err := f.Read(buffer)
